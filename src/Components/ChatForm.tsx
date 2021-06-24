@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
-import { Form } from './Styles/Form/ChatForm'
+import { StickyForm } from './Styles/Form/ChatForm'
 import { Button } from './Styles/Utilities/Button'
 
 type Props = {
@@ -20,10 +20,10 @@ const ChatForm = ({ handleMessage }: Props) => {
   const handleMessageChange = (e: ChangeEvent<HTMLInputElement>) => setMessage(e.currentTarget.value);
 
   return (
-    <Form onSubmit={sendMessage}>
+    <StickyForm onSubmit={sendMessage}>
       <input type="text" value={message} onChange={handleMessageChange} />
       <Button type={'submit'}>Send</Button>
-    </Form>
+    </StickyForm>
   )
 }
 

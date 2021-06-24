@@ -16,17 +16,17 @@ server.listen(PORT, () => {
 })
 
 io.on('connection', (client) => {
+  console.log("user connected successfully")
 
   client.on('send-message', (message) => {
     io.emit('receive-message', message);
   })
 
-  client.on('connected', () => {
-    client.broadcast.emit("User has connected");
-  })
+  client.broadcast.emit('connected', "INFO: User has connected");
 
   client.on('disconnect', (reason) => {
     console.log(`user has disconnected ${reason}`);
+    client.broadcast.emit('disconnected', 'INFO: User has disconnected')
   })
 });
 

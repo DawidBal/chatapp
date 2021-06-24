@@ -9,6 +9,12 @@ const Chat = () => {
   const [messagesArr, setMessagesArr] = useState<string[]>([]);
   const [socket, setSocket] = useState<Socket>();
 
+  function handleArrayState<T>(arrayToCopy: T[], dataToInsert: T, stateToInsert: Function) {
+    const arrWithMsg: T[] = Array.from(arrayToCopy);
+    arrWithMsg.push(dataToInsert);
+    stateToInsert(arrWithMsg);
+  }
+
   useEffect(() => {
     const newSocket = client('http://localhost:8080');
     setSocket(newSocket);
@@ -20,22 +26,24 @@ const Chat = () => {
   useEffect(() => {
     if (socket) {
       socket.on('connected', (msg: string) => {
-        const arrWithMsg: string[] = Array.from(messagesArr);
-        arrWithMsg.push(msg);
-        setMessagesArr(arrWithMsg);
+        console.log(msg);
+        handleArrayState(messagesArr, msg, setMessagesArr);
+      })
+
+      socket.on('disconnected', (msg: string) => {
+        handleArrayState(messagesArr, msg, setMessagesArr);
       })
     }
     return () => {
       socket?.off('connected');
+      socket?.off('disconnect');
     }
-  }, [socket])
+  }, [socket, messagesArr])
 
   useEffect(() => {
     if (socket) {
       socket.on('receive-message', (msg: string) => {
-        const arrWithMsg: string[] = Array.from(messagesArr);
-        arrWithMsg.push(msg);
-        setMessagesArr(arrWithMsg);
+        handleArrayState(messagesArr, msg, setMessagesArr);
       })
     }
     return () => {
