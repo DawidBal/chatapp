@@ -4,7 +4,7 @@ import http from 'http';
 
 const app = express();
 const server = http.createServer(app);
-const PORT = 3001;
+const PORT = 8080;
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
@@ -17,8 +17,13 @@ server.listen(PORT, () => {
 
 io.on('connection', (client) => {
 
-io.on('connection', (client) => {
-  console.log("A user has connected");
+  client.on('send-message', (message) => {
+    io.emit('receive-message', message);
+  })
+
+  client.on('connected', () => {
+    client.broadcast.emit("User has connected");
+  })
 
   client.on('disconnect', (reason) => {
     console.log(`user has disconnected ${reason}`);
