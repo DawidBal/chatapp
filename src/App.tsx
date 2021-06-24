@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import Chat from './Components/Chat';
-import UsernameForm from './Components/UsernameForm';
+import UsernameForm from './Components/Username/UsernameForm';
 
 const App = () => {
 

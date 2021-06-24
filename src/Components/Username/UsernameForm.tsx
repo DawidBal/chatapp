@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent } from 'react';
-import { Form, FormWrapper } from './Styles/Form';
-import { Button } from './Styles/Button';
+import { Form, FormWrapper } from '../Styles/Form/Form';
+import { Button } from '../Styles/Utilities/Button';
 
 type Props = {
   options: {
@@ -26,7 +26,7 @@ const UsernameForm = ({ options }: Props) => {
       <Form onSubmit={handleSubmit}>
         <label htmlFor="nickname">Insert your nickname:</label>
         <input type="text" id="nickname" value={options.userName} onChange={usernameHandler} required />
-        <Button>Accept</Button>
+        <Button rounded>Accept</Button>
       </Form>
     </FormWrapper>
   )

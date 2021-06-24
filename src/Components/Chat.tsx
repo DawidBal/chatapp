@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { ChatWrapper, Messages } from './Styles/Chat/Chat';
-import ChatForm from './Styles/Chat/ChatForm';
+import { ChatWrapper, Messages, Message } from './Styles/Chat/Chat';
+import ChatForm from './ChatForm';
 import client, { Socket } from 'socket.io-client';
 
 const Chat = () => {
@@ -54,7 +54,7 @@ const Chat = () => {
     <ChatWrapper>
       <Messages>
         {messagesArr.map((message, index) => {
-          return <li key={index}>{message}</li>
+          return <Message key={index}>{message}</Message>
         })}
       </Messages>
       <ChatForm handleMessage={handleMessage} />
