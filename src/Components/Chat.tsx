@@ -35,9 +35,9 @@ const Chat = ({ data }: Props) => {
         handleArrayState(messagesArr, { message, username }, setMessagesArr);
       })
 
-      // socket.on('disconnected', (msg: string) => {
-      //   handleArrayState(messagesArr, msg, setMessagesArr);
-      // })
+      socket.on('disconnected', ({ message, username }) => {
+        handleArrayState(messagesArr, { message, username }, setMessagesArr);
+      })
     }
     return () => {
       socket?.off('connected');

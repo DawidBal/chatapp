@@ -23,6 +23,7 @@ io.on('connection', (client) => {
   })
 
   client.on('set-username', (user) => {
+    client.username = user;
     const message = `${user} has connected`;
     const username = 'Server';
     client.broadcast.emit('connected', { message, username });
@@ -30,7 +31,11 @@ io.on('connection', (client) => {
 
   client.on('disconnect', (reason) => {
     console.log(`user has disconnected ${reason}`);
-    client.broadcast.emit('disconnected', 'SRV: User has disconnected')
+    if(client.username) {
+      const message = `${client.username} has disconnected`;
+      const username = 'Server';
+      client.broadcast.emit('disconnected', { message, username })
+    }
   })
 });
 
