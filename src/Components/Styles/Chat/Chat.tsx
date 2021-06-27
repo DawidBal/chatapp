@@ -1,5 +1,9 @@
 import styled from "styled-components"
 
+type Props = {
+  right?: boolean
+}
+
 export const ChatWrapper = styled.div`
   display: grid;
   grid-template-rows: 1fr auto;
@@ -8,19 +12,15 @@ export const ChatWrapper = styled.div`
 `
 
 export const Messages = styled.ul`
+padding: 0 1rem;
 display: flex;
 flex-direction: column;
 gap: 0.3rem;
 list-style: none;
-padding: 0 1rem;
-  & > li:nth-child(even) {
-    background-color: #ebebeb;
-    padding: 0.3rem 0;
-  }
 `
 
-export const Message = styled.li`
-
+export const Message = styled.li<Props>`
+  text-align: ${({ right }) => right ? 'right' : 'left'};
 `
 
 

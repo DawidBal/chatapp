@@ -17,6 +17,7 @@ html, body {
 
 body {
   min-height: 100vh;
+  font-family: 'Lato', sans-serif;
 }
 `
 export default GlobalStyles
