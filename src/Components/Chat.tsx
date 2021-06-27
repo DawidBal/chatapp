@@ -1,38 +1,43 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { ChatWrapper, Messages, Message } from './Styles/Chat/Chat';
+import { ChatWrapper, Messages } from './Styles/Chat/Chat';
+import Message from './Utilities/Message';
 import ChatForm from './ChatForm';
-import client, { Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 
-const Chat = () => {
+type Props = {
+  data: {
+    username: string,
+    socket: Socket | undefined
+  }
+}
 
-  const [messagesArr, setMessagesArr] = useState<string[]>([]);
-  const [socket, setSocket] = useState<Socket>();
+interface Data {
+  message: string,
+  username: string,
+}
 
-  function handleArrayState<T>(arrayToCopy: T[], dataToInsert: T, stateToInsert: Function) {
-    const arrWithMsg: T[] = Array.from(arrayToCopy);
+const Chat = ({ data }: Props) => {
+  const username = data.username;
+  const socket = data.socket;
+  const [messagesArr, setMessagesArr] = useState<Data[]>([]);
+
+
+  function handleArrayState(arrayToCopy: object[], dataToInsert: Data, stateToInsert: Function) {
+    const arrWithMsg: object[] = Array.from(arrayToCopy);
     arrWithMsg.push(dataToInsert);
     stateToInsert(arrWithMsg);
   }
 
   useEffect(() => {
-    const newSocket = client('http://localhost:8080');
-    setSocket(newSocket);
-    return () => {
-      newSocket.close();
-    }
-  }, [])
-
-  useEffect(() => {
     if (socket) {
-      socket.on('connected', (msg: string) => {
-        console.log(msg);
-        handleArrayState(messagesArr, msg, setMessagesArr);
+      socket.on('connected', ({ message, username }: Data) => {
+        handleArrayState(messagesArr, { message, username }, setMessagesArr);
       })
 
-      socket.on('disconnected', (msg: string) => {
-        handleArrayState(messagesArr, msg, setMessagesArr);
-      })
+      // socket.on('disconnected', (msg: string) => {
+      //   handleArrayState(messagesArr, msg, setMessagesArr);
+      // })
     }
     return () => {
       socket?.off('connected');
@@ -42,8 +47,8 @@ const Chat = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('receive-message', (msg: string) => {
-        handleArrayState(messagesArr, msg, setMessagesArr);
+      socket.on('receive-message', ({ message, username }) => {
+        handleArrayState(messagesArr, { message, username }, setMessagesArr);
       })
     }
     return () => {
@@ -54,7 +59,10 @@ const Chat = () => {
 
   const handleMessage = (message: string) => {
     if (message) {
-      socket?.emit('send-message', message);
+      socket?.emit('send-message', {
+        message,
+        username
+      });
     }
   }
 
@@ -62,8 +70,13 @@ const Chat = () => {
     <ChatWrapper>
       <Messages>
         {messagesArr.map((message, index) => {
-          return <Message key={index}>{message}</Message>
-        })}
+          return (
+            message.username === username ?
+              <Message right key={index} message={message.message} username={"You"} /> :
+              <Message key={index} message={message.message} username={message.username} />
+          )
+        })
+        }
       </Messages>
       <ChatForm handleMessage={handleMessage} />
     </ChatWrapper>

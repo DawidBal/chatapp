@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
-import { StickyForm } from './Styles/Form/ChatForm'
+import { StickyForm, Input } from './Styles/Form/ChatForm'
 import { Button } from './Styles/Utilities/Button'
 
 type Props = {
@@ -21,7 +21,7 @@ const ChatForm = ({ handleMessage }: Props) => {
 
   return (
     <StickyForm onSubmit={sendMessage}>
-      <input type="text" value={message} onChange={handleMessageChange} />
+      <Input type="text" value={message} onChange={handleMessageChange} />
       <Button type={'submit'}>Send</Button>
     </StickyForm>
   )

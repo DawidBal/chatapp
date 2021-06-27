@@ -18,15 +18,19 @@ server.listen(PORT, () => {
 io.on('connection', (client) => {
   console.log("user connected successfully")
 
-  client.on('send-message', (message) => {
-    io.emit('receive-message', message);
+  client.on('send-message', ({ message, username }) => {
+    io.emit('receive-message', { message, username });
   })
 
-  client.broadcast.emit('connected', "INFO: User has connected");
+  client.on('set-username', (user) => {
+    const message = `${user} has connected`;
+    const username = 'Server';
+    client.broadcast.emit('connected', { message, username });
+  })
 
   client.on('disconnect', (reason) => {
     console.log(`user has disconnected ${reason}`);
-    client.broadcast.emit('disconnected', 'INFO: User has disconnected')
+    client.broadcast.emit('disconnected', 'SRV: User has disconnected')
   })
 });
 
