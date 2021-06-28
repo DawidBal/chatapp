@@ -17,6 +17,7 @@ interface DataID {
   id: string,
   username: string
   message: string,
+  timestamp: string
 }
 
 const Chat = ({ data }: Props) => {
@@ -36,12 +37,12 @@ const Chat = ({ data }: Props) => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('connected', ({ id, message, username }) => {
-        handleArrayState(messagesArr, { id, message, username }, setMessagesArr);
+      socket.on('connected', ({ id, message, username, timestamp }) => {
+        handleArrayState(messagesArr, { id, message, username, timestamp }, setMessagesArr);
       })
 
-      socket.on('disconnected', ({ id, message, username }) => {
-        handleArrayState(messagesArr, { id, message, username }, setMessagesArr);
+      socket.on('disconnected', ({ id, message, username, timestamp }) => {
+        handleArrayState(messagesArr, { id, message, username, timestamp }, setMessagesArr);
 
       })
 
@@ -63,8 +64,8 @@ const Chat = ({ data }: Props) => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('receive-message', ({ id, message, username }) => {
-        handleArrayState(messagesArr, { id, message, username }, setMessagesArr);
+      socket.on('receive-message', ({ id, message, username, timestamp }) => {
+        handleArrayState(messagesArr, { id, message, username, timestamp }, setMessagesArr);
       })
     }
     return () => {
@@ -73,8 +74,8 @@ const Chat = ({ data }: Props) => {
   }, [socket, messagesArr])
 
   useEffect(() => {
-    socket?.on('typing-message', ({ id, message, username }) => {
-      handleArrayState(typingArr, { id, message, username }, setTypingArr);
+    socket?.on('typing-message', ({ id, message, username, timestamp }) => {
+      handleArrayState(typingArr, { id, message, username, timestamp }, setTypingArr);
     })
 
     return () => {
@@ -108,13 +109,13 @@ const Chat = ({ data }: Props) => {
   return (
     <ChatWrapper>
       <TwoCols>
-        <Users userNumber={userNumber} userList={userList} />
+        <Users userNumber={userNumber} userList={userList} username={username} />
         <Messages>
           {messagesArr.map((message) => {
             return (
               message.username === username ?
-                <Message right key={message.id} message={message.message} username={"You"} /> :
-                <Message key={message.id} message={message.message} username={message.username} />
+                <Message right key={message.id} message={message.message} username={"You"} timestamp={message.timestamp} /> :
+                <Message key={message.id} message={message.message} username={message.username} timestamp={message.timestamp} />
             )
           })
           }

@@ -25,3 +25,7 @@ export const MessagePerson = styled.span<StyledProps>`
   display: block;
   margin: 0.5rem 0;
 `
+
+export const MessageTime = styled(MessagePerson)`
+  padding: 0;
+`

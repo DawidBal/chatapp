@@ -2,6 +2,7 @@ import { Server } from 'Socket.io';
 import express from 'express';
 import http from 'http';
 import { v4 as uuidv4 } from 'uuid';
+import moment from 'moment';
 
 const app = express();
 const server = http.createServer(app);
@@ -24,7 +25,8 @@ io.on('connection', (client) => {
 
   client.on('send-message', ({message, username }) => {
     const id = uuidv4();
-    io.emit('receive-message', { id, message, username });
+    const timestamp = moment().format('LTS');
+    io.emit('receive-message', { id, message, username, timestamp });
   })
 
   client.on('set-username', (user) => {
