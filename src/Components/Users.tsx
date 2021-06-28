@@ -8,16 +8,17 @@ interface User {
 
 type Props = {
   userNumber: Number,
-  userList: User[]
+  userList: User[],
+  username: String
 }
 
-const Users = ({ userNumber, userList }: Props) => {
+const Users = ({ userNumber, userList, username }: Props) => {
   return (
     <UserContainer>
       <UserCounter>{userNumber}{userNumber === 1 ? ` user` : ` users`} online</UserCounter>
       <UserList>
         {userList.map(user => {
-          return <User key={user.id}>{user.user}</User>
+          return <User key={user.id}>{user.user}{username === user.user ? " (you)" : null}</User>
         })}
       </UserList>
     </UserContainer>
