@@ -16,6 +16,9 @@ server.listen(PORT, () => {
   console.log(`listening on *:${PORT}`);
 })
 
+let userCounter = 0;
+let userList = [];
+
 io.on('connection', (client) => {
   console.log("user connected successfully")
 
@@ -30,6 +33,10 @@ io.on('connection', (client) => {
     const username = 'Server';
     const id = uuidv4();
     client.broadcast.emit('connected', { id, message, username });
+
+    userCounter++;
+    userList.push({ id, user});
+    io.emit('user-counter', { userCounter, userList });
   })
 
   client.on('is-typing', () => {
@@ -52,6 +59,10 @@ io.on('connection', (client) => {
       const id = uuidv4();
       client.broadcast.emit('disconnected', { id, message, username })
       client.broadcast.emit('clear-typing-message', client.username);
+
+      userCounter--;
+      userList = [...userList].filter(user => user.user !== client.username);
+      io.emit('user-counter-clear', { userCounter, userList });
     }
   })
 });

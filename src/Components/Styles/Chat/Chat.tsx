@@ -23,5 +23,11 @@ export const Message = styled.li<Props>`
   text-align: ${({ right }) => right ? 'right' : 'left'};
 `
 
+export const TwoCols = styled.div`
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+`
+
 
 

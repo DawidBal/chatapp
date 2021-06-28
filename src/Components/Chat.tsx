@@ -1,9 +1,10 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { ChatWrapper, Messages } from './Styles/Chat/Chat';
+import { ChatWrapper, Messages, TwoCols } from './Styles/Chat/Chat';
 import Message from './Utilities/Message';
 import ChatForm from './ChatForm';
 import { Socket } from 'socket.io-client';
+import Users from './Users';
 
 type Props = {
   data: {
@@ -14,8 +15,8 @@ type Props = {
 
 interface DataID {
   id: string,
+  username: string
   message: string,
-  username: string,
 }
 
 const Chat = ({ data }: Props) => {
@@ -24,10 +25,11 @@ const Chat = ({ data }: Props) => {
   const [messagesArr, setMessagesArr] = useState<DataID[]>([]);
   const [typingArr, setTypingArr] = useState<DataID[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [userNumber, setUserNumber] = useState<Number>(0);
+  const [userList, setUserList] = useState([]);
 
-
-  function handleArrayState(arrayToCopy: object[], dataToInsert: DataID, stateToInsert: Function) {
-    const arrWithMsg: object[] = [...arrayToCopy];
+  function handleArrayState(arrayToCopy: DataID[], dataToInsert: DataID, stateToInsert: Function) {
+    const arrWithMsg: DataID[] = [...arrayToCopy];
     arrWithMsg.push(dataToInsert);
     stateToInsert(arrWithMsg);
   }
@@ -40,6 +42,17 @@ const Chat = ({ data }: Props) => {
 
       socket.on('disconnected', ({ id, message, username }) => {
         handleArrayState(messagesArr, { id, message, username }, setMessagesArr);
+
+      })
+
+      socket.on('user-counter', ({ userCounter, userList }) => {
+        setUserNumber(userCounter);
+        setUserList(userList);
+      })
+
+      socket.on('user-counter-clear', ({ userCounter, userList }) => {
+        setUserNumber(userCounter);
+        setUserList(userList);
       })
     }
     return () => {
@@ -94,20 +107,23 @@ const Chat = ({ data }: Props) => {
 
   return (
     <ChatWrapper>
-      <Messages>
-        {messagesArr.map((message) => {
-          return (
-            message.username === username ?
-              <Message right key={message.id} message={message.message} username={"You"} /> :
-              <Message key={message.id} message={message.message} username={message.username} />
-          )
-        })
-        }
-        {typingArr.map((typeMessage) => {
-          return <Message key={typeMessage.id} message={typeMessage.message} username={typeMessage.username} />
-        })
-        }
-      </Messages>
+      <TwoCols>
+        <Users userNumber={userNumber} userList={userList} />
+        <Messages>
+          {messagesArr.map((message) => {
+            return (
+              message.username === username ?
+                <Message right key={message.id} message={message.message} username={"You"} /> :
+                <Message key={message.id} message={message.message} username={message.username} />
+            )
+          })
+          }
+          {typingArr.map((typeMessage) => {
+            return <Message key={typeMessage.id} message={typeMessage.message} username={typeMessage.username} />
+          })
+          }
+        </Messages>
+      </TwoCols>
       <ChatForm handleMessage={handleMessage} setIsTyping={setIsTyping} />
     </ChatWrapper>
   )
