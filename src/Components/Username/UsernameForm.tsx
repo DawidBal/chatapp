@@ -28,7 +28,7 @@ const UsernameForm = ({ options }: Props) => {
     <FormWrapper>
       <Form onSubmit={handleSubmit}>
         <label htmlFor="nickname">Insert your nickname:</label>
-        <input type="text" id="nickname" value={options.username} onChange={usernameHandler} required />
+        <input type="text" id="nickname" value={options.username} onChange={usernameHandler} maxLength={15} required />
         <Button rounded>Accept</Button>
       </Form>
     </FormWrapper>
