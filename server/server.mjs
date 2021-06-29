@@ -37,7 +37,7 @@ io.on('connection', (client) => {
     client.broadcast.emit('connected', { id, message, username });
 
     userCounter++;
-    userList.push({ id, user});
+    userList.push({ id, user });
     io.emit('user-counter', { userCounter, userList });
   })
 

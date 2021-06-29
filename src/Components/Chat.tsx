@@ -26,11 +26,9 @@ const Chat = ({ data }: Props) => {
   const [messagesArr, setMessagesArr] = useState<DataID[]>([]);
   const [typingArr, setTypingArr] = useState<DataID[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [userNumber, setUserNumber] = useState<Number>(0);
-  const [userList, setUserList] = useState([]);
   const msgListRef = useRef<HTMLUListElement>(null);
 
-  function handleArrayState(arrayToCopy: DataID[], dataToInsert: DataID, stateToInsert: Function) {
+  const handleArrayState = (arrayToCopy: DataID[], dataToInsert: DataID, stateToInsert: Function) => {
     const arrWithMsg: DataID[] = [...arrayToCopy];
     arrWithMsg.push(dataToInsert);
     stateToInsert(arrWithMsg);
@@ -42,20 +40,9 @@ const Chat = ({ data }: Props) => {
       socket.on('connected', ({ id, message, username, timestamp }) => {
         handleArrayState(messagesArr, { id, message, username, timestamp }, setMessagesArr);
       })
-
       socket.on('disconnected', ({ id, message, username, timestamp }) => {
         handleArrayState(messagesArr, { id, message, username, timestamp }, setMessagesArr);
 
-      })
-
-      socket.on('user-counter', ({ userCounter, userList }) => {
-        setUserNumber(userCounter);
-        setUserList(userList);
-      })
-
-      socket.on('user-counter-clear', ({ userCounter, userList }) => {
-        setUserNumber(userCounter);
-        setUserList(userList);
       })
     }
     return () => {
@@ -113,7 +100,7 @@ const Chat = ({ data }: Props) => {
   return (
     <ChatWrapper>
       <TwoCols>
-        <Users userNumber={userNumber} userList={userList} username={username} />
+        <Users socket={socket} username={username} />
         <Messages ref={msgListRef}>
           {messagesArr.map((message) => {
             return (
