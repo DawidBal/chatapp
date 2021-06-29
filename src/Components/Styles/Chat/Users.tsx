@@ -25,6 +25,7 @@ export const User = styled.li`
 
 export const UserCounter = styled.p`
   text-align: center;
+  margin-top: 0;
   &::first-letter {
     color: #0064d6;
     font-weight: bold;

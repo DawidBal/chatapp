@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useState, useEffect } from 'react';
 import { ChatWrapper, Messages, TwoCols } from './Styles/Chat/Chat';
 import Message from './Utilities/Message';
@@ -28,6 +28,7 @@ const Chat = ({ data }: Props) => {
   const [isTyping, setIsTyping] = useState(false);
   const [userNumber, setUserNumber] = useState<Number>(0);
   const [userList, setUserList] = useState([]);
+  const msgListRef = useRef<HTMLUListElement>(null);
 
   function handleArrayState(arrayToCopy: DataID[], dataToInsert: DataID, stateToInsert: Function) {
     const arrWithMsg: DataID[] = [...arrayToCopy];
@@ -36,6 +37,7 @@ const Chat = ({ data }: Props) => {
   }
 
   useEffect(() => {
+
     if (socket) {
       socket.on('connected', ({ id, message, username, timestamp }) => {
         handleArrayState(messagesArr, { id, message, username, timestamp }, setMessagesArr);
@@ -63,9 +65,11 @@ const Chat = ({ data }: Props) => {
   }, [socket, messagesArr])
 
   useEffect(() => {
+
     if (socket) {
       socket.on('receive-message', ({ id, message, username, timestamp }) => {
         handleArrayState(messagesArr, { id, message, username, timestamp }, setMessagesArr);
+        msgListRef.current?.children[messagesArr.length]?.scrollIntoView({ behavior: 'smooth' });
       })
     }
     return () => {
@@ -110,7 +114,7 @@ const Chat = ({ data }: Props) => {
     <ChatWrapper>
       <TwoCols>
         <Users userNumber={userNumber} userList={userList} username={username} />
-        <Messages>
+        <Messages ref={msgListRef}>
           {messagesArr.map((message) => {
             return (
               message.username === username ?
