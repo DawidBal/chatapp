@@ -10,9 +10,11 @@ export const Button = styled.button<Props>`
   border: 1px solid #0064d6;
   color: white;
   border-radius: ${({ rounded }) => rounded ? '15px' : '0'};
-  transition: border-radius 0.3s ease;
+  transition: border-radius 0.3s ease, background 0.3s ease, border 0.3s ease;
   font-size: 1rem;
   &:hover {
     border-radius: 0;
+    background-color: #0056b7;
+    border-color: #0056b7;
   }
 `
